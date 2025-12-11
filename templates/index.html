@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-5">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Envie seu desejo ao Papai Noel 🎅</h5>
+          <form action="{{ url_for('add_wish') }}" method="post">
+            <div class="mb-2">
+              <label class="form-label">Nome</label>
+              <input class="form-control" name="name" required />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Email (opcional)</label>
+              <input class="form-control" name="email" type="email" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Desejo</label>
+              <textarea class="form-control" name="wish_text" rows="3" required></textarea>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-primary">Enviar Desejo</button>
+              <a class="btn btn-outline-secondary" href="{{ url_for('export_csv') }}">Exportar CSV</a>
+            </div>
+          </form>
+        </div>
+      </div>
+      <p class="mt-2 small text-muted">Os desejos persistem em um banco SQLite em <code>data/wishlist.db</code>.</p>
+    </div>
+
+    <div class="col-md-7">
+      <h5>Lista de desejos</h5>
+      {% if wishes %}
+        <div class="list-group">
+          {% for w in wishes %}
+            <div class="list-group-item mb-2 shadow-sm">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <strong>{{ w['name']|e }}</strong>
+                  <small class="text-muted"> — {{ w['created_at'] }}</small>
+                  <p class="mb-1">{{ w['wish_text']|e }}</p>
+                  {% if w['email'] %}
+                    <small class="text-muted">Contato: {{ w['email']|e }}</small>
+                  {% endif %}
+                </div>
+                <div class="text-end">
+                  {% if w['fulfilled'] %}
+                    <form method="post" action="{{ url_for('toggle_fulfilled', wish_id=w['id']) }}">
+                      <button class="btn btn-sm btn-success mb-1">Realizado ✅</button>
+                    </form>
+                  {% else %}
+                    <form method="post" action="{{ url_for('toggle_fulfilled', wish_id=w['id']) }}">
+                      <button class="btn btn-sm btn-outline-success mb-1">Marcar como realizado</button>
+                    </form>
+                  {% endif %}
+                  <form method="post" action="{{ url_for('delete_wish', wish_id=w['id']) }}" onsubmit="return confirm('Remover desejo?');">
+                    <button class="btn btn-sm btn-outline-danger">Remover</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted">Nenhum desejo ainda — seja o primeiro a enviar 🎁</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

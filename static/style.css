@@ -1,0 +1,25 @@
+body {
+  background: linear-gradient(180deg, #fffaf0 0%, #f2f9ff 100%);
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.navbar-brand {
+  font-weight: 700;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+.list-group-item {
+  border-radius: 8px;
+}
+
+/* Pequenos detalhes natalinos */
+.card::before {
+  content: "🎄";
+  font-size: 26px;
+  position: absolute;
+  margin-left: -38px;
+  margin-top: -38px;
+}
